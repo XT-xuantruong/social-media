@@ -75,10 +75,12 @@ def send_friendship_request(request, pk):
 @api_view(['POST'])
 def handle_request(request, pk, status):
     user = User.objects.get(pk=pk)
-    friendship_request = FriendshipRequest.objects.filter(created_for=request.user).get(created_by=user)
-    friendship_request.status = status
-    friendship_request.save()
-
+    print(user)
+    friendship_requests = FriendshipRequest.objects.filter(created_for=request.user, created_by=user)
+    for friendship_request in friendship_requests:
+        friendship_request.status = status
+        friendship_request.save()
+    message=""
     if(status=="accepted"):
         user.friends.add(request.user)
         user.friends_count = user.friends_count + 1

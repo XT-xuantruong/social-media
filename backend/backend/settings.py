@@ -92,7 +92,8 @@ INSTALLED_APPS = [
     "cloudinary",
     'post',
     'upload',
-    "account"
+    "account",
+    "chat"
 ]
 
 MIDDLEWARE = [

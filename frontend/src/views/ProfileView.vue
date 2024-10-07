@@ -5,12 +5,15 @@ import Trends from "../components/Trends.vue";
 import FeedItem from "../components/FeedItem.vue";
 import { useUserStore } from "@/stores/user";
 import { onBeforeMount, onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import postServices from "@/services/postServices";
 import oauthServices from "@/services/oauthServices";
+import chatServices from "@/services/chatServices";
 
 const userStore = useUserStore();
 const route = useRoute();
+const router = useRouter();
+
 
 const posts = ref([]);
 const user = ref({});
@@ -68,13 +71,17 @@ const sendFriendshipRequest = () => {
     });
 };
 
-// const logout = () => {
-//   console.log("Log out");
-
-//   this.userStore.removeToken();
-
-//   this.$router.push("/login");
-// };
+const sendDirectMessage = () => {
+  chatServices
+    .getChat(route.params.id)
+    .then((response) => {
+      console.log(response.data);
+      router.push("/messages")
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
+};
 
 onMounted(() => getFeed());
 
@@ -112,14 +119,13 @@ onBeforeMount(() =>
           >
             Send friendship request
           </button>
-
-          <!-- <button
-            class="inline-block py-4 px-3 bg-red-600 text-xs text-white rounded-lg"
-            @click="logout"
-            v-if="userStore.user.id === user.id"
+          <button
+            class="inline-block mt-4 py-4 px-3 bg-purple-600 text-xs text-white rounded-lg"
+            @click="sendDirectMessage"
+            v-if="userStore.user.id !== user.id"
           >
-            Log out
-          </button> -->
+            Send direct message
+          </button>
         </div>
       </div>
     </div>

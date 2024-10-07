@@ -19,6 +19,7 @@ from django.urls import path, re_path, include
 from .views import single_page_view
 
 urlpatterns = [
+    path('api/chat/', include('chat.urls')),
     path('api/search/', include('search.urls')),
     path('api/account/', include('account.urls')),
     path('api/posts/', include('post.urls')),
