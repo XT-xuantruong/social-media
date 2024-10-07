@@ -1,51 +1,47 @@
 <template>
   <div class="p-4 bg-white border border-gray-200 rounded-lg">
     <h3 class="mb-6 text-xl">Trends</h3>
+
     <div class="space-y-4">
-      <div class="flex items-center justify-between">
+      <div
+        class="flex items-center justify-between"
+        v-for="trend in trends"
+        v-bind:key="trend.id"
+      >
         <p class="text-xs">
-          <strong>#codewithstein</strong><br />
-          <span class="text-gray-500">180 posts</span>
+          <strong>#{{ trend.hashtag }}</strong
+          ><br />
+          <span class="text-gray-500">{{ trend.occurences }} posts</span>
         </p>
-        <a
-          href="#"
+
+        <RouterLink
+          :to="{ name: 'trendview', params: { id: trend.hashtag } }"
           class="py-2 px-3 bg-purple-600 text-white text-xs rounded-lg"
-          >Explore</a
-        >
-      </div>
-      <div class="flex items-center justify-between">
-        <p class="text-xs">
-          <strong>#codewithstein</strong><br />
-          <span class="text-gray-500">180 posts</span>
-        </p>
-        <a
-          href="#"
-          class="py-2 px-3 bg-purple-600 text-white text-xs rounded-lg"
-          >Explore</a
-        >
-      </div>
-      <div class="flex items-center justify-between">
-        <p class="text-xs">
-          <strong>#codewithstein</strong><br />
-          <span class="text-gray-500">180 posts</span>
-        </p>
-        <a
-          href="#"
-          class="py-2 px-3 bg-purple-600 text-white text-xs rounded-lg"
-          >Explore</a
-        >
-      </div>
-      <div class="flex items-center justify-between">
-        <p class="text-xs">
-          <strong>#codewithstein</strong><br />
-          <span class="text-gray-500">180 posts</span>
-        </p>
-        <a
-          href="#"
-          class="py-2 px-3 bg-purple-600 text-white text-xs rounded-lg"
-          >Explore</a
+          >Explore</RouterLink
         >
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import postServices from "@/services/postServices";
+import { onMounted, ref } from "vue";
+
+const trends = ref([]);
+
+const getTrends = () => {
+  postServices
+    .getTrends()
+    .then((response) => {
+      console.log(response.data);
+
+      trends.value = response.data;
+    })
+    .catch((error) => {
+      console.log("Error: ", error);
+    });
+};
+
+onMounted(() => getTrends());
+</script>

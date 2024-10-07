@@ -54,7 +54,7 @@
             <p class="text-xs text-gray-500">
               {{ user.friends_count }} friends
             </p>
-            <p class="text-xs text-gray-500">120 posts</p>
+            <p class="text-xs text-gray-500">{{ user.posts_count }} posts</p>
           </div>
         </div>
       </div>
