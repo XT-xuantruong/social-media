@@ -16,6 +16,13 @@ class PostServices extends ApiService {
       data: data,
     });
   }
+
+  async get(id){
+    return this.request({
+      method: "get",
+      url: `/${this.entity}/profile/${id}/`,
+    });
+  }
   
 }
 

@@ -1,4 +1,5 @@
 <script setup>
+
 import axios from "axios";
 import PeopleYouMayKnow from "../components/PeopleYouMayKnow.vue";
 import Trends from "../components/Trends.vue";
@@ -9,18 +10,16 @@ import { useRoute } from "vue-router";
 import postServices from "@/services/postServices";
 import oauthServices from "@/services/oauthServices";
 
+
 const userStore = useUserStore();
-const router = useRoute();
+const route = useRoute();
 
 const posts = ref([]);
 const user = ref({});
 const body = ref("");
 
-console.log(router.params.id);
-
 const getFeed = () => {
-  axios
-    .get(`/api/posts/profile/${router.params.id}/`)
+  postServices.get(route.params.id)
     .then((response) => {
       console.log("data", response.data);
 
@@ -49,10 +48,8 @@ const submitForm = () => {
 };
 
 const sendFriendshipRequest = () => {
-  console.log("ok");
-
   oauthServices
-    .sendFriendshipRequest(router.params.id)
+    .sendFriendshipRequest(route.params.id)
     .then((response) => {
       console.log("data", response.data);
 
@@ -87,7 +84,7 @@ onMounted(() => getFeed());
 
 onBeforeMount(() =>
   watch(
-    () => router.params.id,
+    () => route.params.id,
     () => getFeed()
   )
 );
