@@ -1,5 +1,4 @@
 <script setup>
-
 import axios from "axios";
 import PeopleYouMayKnow from "../components/PeopleYouMayKnow.vue";
 import Trends from "../components/Trends.vue";
@@ -10,7 +9,6 @@ import { useRoute } from "vue-router";
 import postServices from "@/services/postServices";
 import oauthServices from "@/services/oauthServices";
 
-
 const userStore = useUserStore();
 const route = useRoute();
 
@@ -19,13 +17,11 @@ const user = ref({});
 const body = ref("");
 
 const getFeed = () => {
-  postServices.get(route.params.id)
+  postServices
+    .getProfileFeed(route.params.id)
     .then((response) => {
-      console.log("data", response.data);
-
       posts.value = response.data.posts;
       user.value = response.data.user;
-      console.log(user.value);
     })
     .catch((error) => {
       console.log("error", error);
