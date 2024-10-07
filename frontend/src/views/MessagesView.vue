@@ -10,18 +10,17 @@
             v-on:click="setActiveConversation(conversation.id)"
           >
             <div class="flex items-center space-x-2">
-              <img
-                src="https://i.pravatar.cc/300?img=70"
-                class="w-[40px] rounded-full"
-              />
-
               <template v-for="user in conversation.users" v-bind:key="user.id">
-                <p
-                  class="text-xs font-bold"
-                  v-if="user.id !== userStore.user.id"
-                >
-                  {{ user.name }}
-                </p>
+                <template v-if="user.id !== userStore.user.id">
+                  <img
+                    :src="user.avatar"
+                    class="w-[40px] h-[40px] rounded-full"
+                  />
+
+                  <p class="text-xs font-bold">
+                    {{ user.name }}
+                  </p>
+                </template>
               </template>
             </div>
 
@@ -56,8 +55,8 @@
               </div>
               <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
                 <img
-                  src="https://i.pravatar.cc/300?img=70"
-                  class="w-[40px] rounded-full"
+                  :src="message.created_by.avatar"
+                  class="w-[40px] h-[40px] rounded-full"
                 />
               </div>
             </div>
@@ -65,8 +64,8 @@
             <div class="flex w-full mt-2 space-x-3 max-w-md" v-else>
               <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
                 <img
-                  src="https://i.pravatar.cc/300?img=70"
-                  class="w-[40px] rounded-full"
+                  :src="message.created_by.avatar"
+                  class="w-[40px] h-[40px] rounded-full"
                 />
               </div>
               <div>

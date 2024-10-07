@@ -60,23 +60,36 @@ class OauthServices extends ApiService {
     return this.request(option);
   }
 
-  async sendFriendshipRequest(id){
+  async sendFriendshipRequest(id) {
     return this.request({
       method: "post",
       url: `/${this.entity}/friends/${id}/request/`,
     });
   }
 
-  async handleFriendshipRequest(status,pk){
+  async handleFriendshipRequest(status, pk) {
     return this.request({
       method: "post",
       url: `/${this.entity}/friends/${pk}/${status}/`,
     });
   }
-  async getFriendshipRequest(pk){
+  async getFriendshipRequest(pk) {
     return this.request({
       method: "get",
       url: `/${this.entity}/friends/${pk}/`,
+    });
+  }
+
+  async updateProfile(data) {
+    console.log("data update", data);
+
+    return this.request({
+      method: "post",
+      url: `/${this.entity}/editprofile/`,
+      data: data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
   }
 }

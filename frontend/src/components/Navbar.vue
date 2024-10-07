@@ -6,7 +6,7 @@ import { RouterLink } from "vue-router";
 const user = useUserStore();
 const logout = async () => {
   console.log("log");
-  
+
   await oauthServices.logout(user.user.refresh);
   user.$reset();
   router.push("/login");
@@ -88,10 +88,8 @@ const logout = async () => {
         </div>
         <div class="menu-right">
           <template v-if="user.user.isAuthenticated">
-            <RouterLink
-              :to="{ name: 'profile', params: { id: user.user.id } }"
-            >
-              <img src="https://i.pravatar.cc/40?img=70" class="rounded-full" />
+            <RouterLink :to="{ name: 'profile', params: { id: user.user.id } }">
+              <img :src="user.user.avatar" class="w-12 h-12 rounded-full" />
             </RouterLink>
           </template>
 

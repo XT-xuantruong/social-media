@@ -33,7 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255, blank=True, default='')
-    avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
+    avatar = models.CharField(max_length=255, blank=True, default='https://res.cloudinary.com/dvzjb1o3h/image/upload/v1727704410/x6xaehqt16rjvnvhofv3.jpg')
     friends = models.ManyToManyField('self')
     friends_count = models.IntegerField(default=0)
 

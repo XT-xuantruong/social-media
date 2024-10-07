@@ -14,7 +14,6 @@ const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 
-
 const posts = ref([]);
 const user = ref({});
 const body = ref("");
@@ -76,7 +75,7 @@ const sendDirectMessage = () => {
     .getChat(route.params.id)
     .then((response) => {
       console.log(response.data);
-      router.push("/messages")
+      router.push("/messages");
     })
     .catch((error) => {
       console.log("error", error);
@@ -96,7 +95,7 @@ onBeforeMount(() =>
   <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
     <div class="main-left col-span-1">
       <div class="p-4 bg-white border border-gray-200 text-center rounded-lg">
-        <img src="https://i.pravatar.cc/300?img=70" class="mb-6 rounded-full" />
+        <img :src="user.avatar" class="mb-6 rounded-full" />
 
         <p>
           <strong>{{ user.name }}</strong>
@@ -126,6 +125,13 @@ onBeforeMount(() =>
           >
             Send direct message
           </button>
+          <RouterLink
+            class="inline-block mr-2 py-4 px-3 bg-purple-600 text-xs text-white rounded-lg"
+            to="/profile/edit"
+            v-if="userStore.user.id === user.id"
+          >
+            Edit profile
+          </RouterLink>
         </div>
       </div>
     </div>

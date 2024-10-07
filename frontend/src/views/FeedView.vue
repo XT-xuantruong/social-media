@@ -50,12 +50,13 @@ import PeopleYouMayKnow from "../components/PeopleYouMayKnow.vue";
 import Trends from "../components/Trends.vue";
 import FeedItem from "../components/FeedItem.vue";
 import { onMounted, ref } from "vue";
+import postServices from "@/services/postServices";
 
 const posts = ref([]);
 const body = ref("");
 const getFeed = () => {
-  axios
-    .get("/api/posts/")
+  postServices
+    .gets()
     .then((response) => {
       posts.value = response.data;
     })
