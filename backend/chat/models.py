@@ -23,6 +23,9 @@ class ConversationMessage(models.Model):
     sent_to = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('created_at',)
     
     def created_at_formatted(self):
        return timesince(self.created_at)
