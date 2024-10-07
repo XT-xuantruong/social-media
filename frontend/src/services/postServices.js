@@ -42,6 +42,20 @@ class PostServices extends ApiService {
       data: data,
     });
   }
+
+  async getTrends() {
+    return this.request({
+      method: "get",
+      url: `/${this.entity}/trends/`,
+    });
+  }
+
+  async getTrend(id) {
+    return this.request({
+      method: "get",
+      url: `/${this.entity}/?trend=${id}/`,
+    });
+  }
 }
 
 export default new PostServices();
