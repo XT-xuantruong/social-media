@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(join(BASE_DIR, 'config.env'))
 
-# AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'account.User'
 
 DB_NAME = env('DB_NAME')
 DB_USER = env('DB_USER')
@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     "cloudinary",
     'post',
     'upload',
+    "account"
 ]
 
 MIDDLEWARE = [
