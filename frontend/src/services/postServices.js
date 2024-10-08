@@ -5,16 +5,15 @@ class PostServices extends ApiService {
   get entity() {
     return "posts";
   }
-  async create(credential) {
-    const { body } = credential;
-    var data = {
-      body: body,
-    };
-    console.log(data);
+  async create(data) {
+    console.log("API log", data);
     return this.request({
       method: "post",
       url: `/${this.entity}/create/`,
       data: data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
   }
 

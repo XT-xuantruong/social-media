@@ -5,9 +5,14 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from account.models import User
 from account.serializers import UserSerializer
 
-from .forms import PostForm
-from .models import Post, Like, Comment,  Trend
+from .forms import PostForm, AttachmentForm
+from .models import Post, Like, Comment, Trend, PostAttachment
+from upload.models import Photo
+from upload.serializers import PhotoSerializer
+from upload.helpers import custom_response
 from .serializers import PostSerializer, PostDetailSerializer, CommentSerializer, TrendSerializer
+from django.forms.models import model_to_dict
+import cloudinary.api
 
 
 @api_view(['GET'])
@@ -51,18 +56,51 @@ def post_list_profile(request, id):
 
 @api_view(['POST'])
 def post_create(request):
-    form = PostForm(request.data)
-    print(request.user.name)
-    if form.is_valid():
-        post = form.save(commit=False)
-        post.created_by = request.user
+    user = request.user
+    images = request.FILES.getlist('attachments')
+    data = []
+
+    post_data = request.POST.copy()
+    post_data['created_by'] = user.id
+
+    post_form = PostForm(post_data)
+
+    if post_form.is_valid():
+        post = post_form.save(commit=False)
+        post.created_by = user
         post.save()
 
-        serializer = PostSerializer(post)
+        for image in images:
+            try:
+                upload_result = cloudinary.uploader.upload(image,folder="post")
+                img_obj = Photo(
+                    id=upload_result['public_id'],
+                    url=upload_result['secure_url'],
+                    filename=upload_result['original_filename'],
+                    format=upload_result['format'],
+                    width=upload_result['width'],
+                    height=upload_result['height'],
+                    created_at=upload_result['created_at'],
+                )
+                img_obj.save()
 
-        return JsonResponse(serializer.data, safe=False)
+                attachment_obj = PostAttachment(
+                    image=img_obj.url,
+                    created_by=user
+                )
+                attachment_obj.save()
+                post.attachments.add(attachment_obj)
+                data.append({
+                        'photo': model_to_dict(img_obj),  # Trả về thông tin ảnh từ model Photo
+                        'attachments': model_to_dict(attachment_obj)  # Trả về thông tin attachment
+                    })   
+            except  Exception as e:
+                return custom_response('Upload images failed!', 'Error', [str(e)], 400)
+        post.save()
+        post_serializer = PostSerializer(post)
+        return custom_response('Post created successfully!','Success', data=post_serializer.data, status_code=201)
     else:
-        return JsonResponse({'error': 'add somehting here later!...'})
+        return custom_response('Invalid form data!','Errors', data=post_form.errors, status_code=400)
     
 
 @api_view(['POST'])
