@@ -2,24 +2,31 @@
   <div class="mb-6 flex items-center justify-between">
     <div class="flex items-center space-x-6">
       <img
-        :src="props.post.created_by.avatar"
+        :src="post.created_by.avatar"
         class="w-[40px] h-[40px] rounded-full"
       />
 
       <p>
         <strong>
           <RouterLink
-            :to="{ name: 'profile', params: { id: props.post.created_by.id } }"
-            >{{ props.post.created_by.name }}</RouterLink
+            :to="{ name: 'profile', params: { id: post.created_by.id } }"
+            >{{ post.created_by.name }}</RouterLink
           >
         </strong>
       </p>
     </div>
 
-    <p class="text-gray-600">{{ props.post.created_at_formatted }} ago</p>
+    <p class="text-gray-600">{{ post.created_at_formatted }} ago</p>
   </div>
-
-  <p>{{ props.post.body }}</p>
+  <template v-if="post.attachments.length">
+    <img
+      v-for="image in post.attachments"
+      v-bind:key="image.id"
+      :src="image.image"
+      class="w-full mb-4 rounded-xl"
+    />
+  </template>
+  <p>{{ post.body }}</p>
 
   <div class="my-6 flex justify-between">
     <div class="flex space-x-6">
@@ -39,9 +46,7 @@
           ></path>
         </svg>
 
-        <span class="text-gray-500 text-xs"
-          >{{ props.post.likes_count }} likes</span
-        >
+        <span class="text-gray-500 text-xs">{{ post.likes_count }} likes</span>
       </div>
 
       <div class="flex items-center space-x-2">
@@ -61,9 +66,9 @@
         </svg>
 
         <RouterLink
-          :to="{ name: 'postview', params: { id: props.post.id } }"
+          :to="{ name: 'postview', params: { id: post.id } }"
           class="text-gray-500 text-xs"
-          >{{ props.post.comments_count }} comments</RouterLink
+          >{{ post.comments_count }} comments</RouterLink
         >
       </div>
     </div>

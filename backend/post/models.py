@@ -8,7 +8,7 @@ from account.models import User
 
 class PostAttachment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    image = models.ImageField(upload_to='post_attachments')
+    image = models.CharField(max_length=255, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='post_attachments', on_delete=models.CASCADE)
 
 class Like(models.Model):

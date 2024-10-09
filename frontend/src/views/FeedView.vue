@@ -9,14 +9,18 @@
               class="p-4 w-full bg-gray-100 rounded-lg"
               placeholder="What are you thinking about?"
             ></textarea>
+            <div id="preview" v-if="url">
+              <img :src="url" class="w-[100px] mt-3 rounded-xl" />
+            </div>
           </div>
 
           <div class="p-4 border-t border-gray-100 flex justify-between">
-            <a
-              href="#"
+            <label
               class="inline-block py-4 px-6 bg-gray-600 text-white rounded-lg"
-              >Attach image 1</a
             >
+              <input type="file" ref="file" @change="onFileChange" />
+              Attach image
+            </label>
 
             <button
               class="inline-block py-4 px-6 bg-purple-600 text-white rounded-lg"
@@ -54,6 +58,8 @@ import postServices from "@/services/postServices";
 
 const posts = ref([]);
 const body = ref("");
+const url = ref(null);
+const file = ref(null);
 const getFeed = () => {
   postServices
     .gets()
@@ -66,18 +72,40 @@ const getFeed = () => {
 };
 
 const submitForm = () => {
-  axios
-    .post("/api/posts/create/", {
-      body: body.value,
-    })
+  let formData = new FormData();
+  if (file.value && file.value.files.length > 0) {
+    formData.append("attachments", file.value.files[0]);
+  }
+  formData.append("body", body.value);
+  postServices
+    .create(formData)
     .then((response) => {
-      posts.value.unshift(response.data);
+      posts.value.unshift(response.data.data);
+      console.log("11111111", posts);
+
       body.value = "";
+      file.value = null;
+      url.value = null;
     })
     .catch((error) => {
       console.log("error", error);
     });
 };
-
+const onFileChange = (e) => {
+  const file = e.target.files[0];
+  url.value = URL.createObjectURL(file);
+};
 onMounted(() => getFeed());
 </script>
+
+<style scoped>
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+</style>

@@ -17,8 +17,13 @@ const router = useRouter();
 const posts = ref([]);
 const user = ref({});
 const body = ref("");
+<<<<<<< HEAD
 
 
+=======
+const url = ref(null);
+const file = ref(null);
+>>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
 const getFeed = () => {
   postServices
     .getProfileFeed(route.params.id)
@@ -34,15 +39,18 @@ const getFeed = () => {
     });
 };
 const submitForm = () => {
-  console.log("show ra", body.value);
-
+  let formData = new FormData();
+  if (file.value && file.value.files.length > 0) {
+    formData.append("attachments", file.value.files[0]);
+  }
+  formData.append("body", body.value);
   postServices
-    .create({ body: body.value })
+    .create(formData)
     .then((response) => {
-      console.log("data", response.data);
-
-      posts.value.unshift(response.data);
+      posts.value.unshift(response.data.data);
       body.value = "";
+      file.value = null;
+      url.value = null;
     })
     .catch((error) => {
       console.log("error", error);
@@ -53,8 +61,6 @@ const sendFriendshipRequest = () => {
   oauthServices
     .sendFriendshipRequest(route.params.id)
     .then((response) => {
-      console.log("data", response.data);
-
       if (response.data.message == "request already sent") {
         this.toastStore.showToast(
           5000,
@@ -78,20 +84,22 @@ const sendDirectMessage = () => {
   chatServices
     .getChat(route.params.id)
     .then((response) => {
-      console.log(response.data);
       router.push("/messages");
     })
     .catch((error) => {
       console.log("error", error);
     });
 };
-
+const onFileChange = (e) => {
+  const file = e.target.files[0];
+  url.value = URL.createObjectURL(file);
+};
 onMounted(() => getFeed());
 
-  watch(
-    () => route.params.id,
-    () => getFeed()
-  )
+watch(
+  () => route.params.id,
+  () => getFeed()
+);
 </script>
 <template>
   <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
@@ -150,16 +158,22 @@ onMounted(() => getFeed());
               class="p-4 w-full bg-gray-100 rounded-lg"
               placeholder="What are you thinking about?"
             ></textarea>
+<<<<<<< HEAD
             
+=======
+            <div id="preview" v-if="url">
+              <img :src="url" class="w-[100px] mt-3 rounded-xl" />
+            </div>
+>>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
           </div>
 
           <div class="p-4 border-t border-gray-100 flex justify-between">
-            <a
-              href="#"
+            <label
               class="inline-block py-4 px-6 bg-gray-600 text-white rounded-lg"
-              >Attach image</a
             >
-
+              <input type="file" ref="file" @change="onFileChange" />
+              Attach image
+            </label>
             <button
               class="inline-block py-4 px-6 bg-purple-600 text-white rounded-lg"
             >
@@ -185,3 +199,15 @@ onMounted(() => getFeed());
     </div>
   </div>
 </template>
+
+<style scoped>
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+</style>
