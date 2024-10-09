@@ -17,7 +17,7 @@ const router = useRouter();
 const posts = ref([]);
 const user = ref({});
 const body = ref("");
-const can_send_friendship_request=ref(null)
+const can_send_friendship_request = ref(null);
 
 const url = ref(null);
 const file = ref(null);
@@ -27,10 +27,9 @@ const getFeed = () => {
     .then((response) => {
       posts.value = response.data.posts;
       user.value = response.data.user;
-      can_send_friendship_request = response.data.can_send_friendship_request
+      can_send_friendship_request = response.data.can_send_friendship_request;
 
       console.log("long", user);
-
     })
     .catch((error) => {
       console.log("error", error);
@@ -59,7 +58,7 @@ const sendFriendshipRequest = () => {
   oauthServices
     .sendFriendshipRequest(route.params.id)
     .then((response) => {
-      can_send_friendship_request = false
+      can_send_friendship_request = false;
       if (response.data.message == "request already sent") {
         this.toastStore.showToast(
           5000,
@@ -157,7 +156,7 @@ watch(
               class="p-4 w-full bg-gray-100 rounded-lg"
               placeholder="What are you thinking about?"
             ></textarea>
-            
+
             <div id="preview" v-if="url">
               <img :src="url" class="w-[100px] mt-3 rounded-xl" />
             </div>

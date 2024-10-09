@@ -94,7 +94,8 @@ INSTALLED_APPS = [
     'post',
     'upload',
     "account",
-    "chat"
+    "chat",
+    'notification'
 ]
 
 MIDDLEWARE = [
