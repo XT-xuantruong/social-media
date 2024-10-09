@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(join(BASE_DIR, 'config.env'))
 
+
 AUTH_USER_MODEL = 'account.User'
 
 DB_NAME = env('DB_NAME')
@@ -197,3 +198,10 @@ DJANGO_VITE = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"  # SMTP server for Gmail
+EMAIL_USE_TLS = True  # TLS (Transport Layer Security) encryption is used
+EMAIL_PORT = 587  # Port for TLS connection
+EMAIL_HOST_USER = "hoanglong200703@gmail.com"  # Your Gmail address
+EMAIL_HOST_PASSWORD = "fgotwdndkoltsedl"  # Your Gmail password
+DEFAULT_FROM_EMAIL = "hoanglong200703@gmail.com" 

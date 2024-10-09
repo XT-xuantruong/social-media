@@ -74,7 +74,14 @@
             </button>
           </div>
         </form>
-        <div v-bind:class="toastStore.classes">{{ toastStore.message }}</div>
+
+        <div
+          class="bg-green-300 text-white rounded-lg p-6 mt-2"
+          :class="toastStore.classes"
+          v-if="toastStore.isVisible"
+        >
+          {{ toastStore.message }}
+        </div>
       </div>
     </div>
   </div>
@@ -84,12 +91,15 @@
 import { useToastStore } from "@/stores/toast";
 import oauthServices from "@/services/oauthServices";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const toastStore = useToastStore();
 const form = ref({ email: "", name: "", password1: "", password2: "" });
 const errors = ref([]);
+const router = useRouter();
 
 const submitForm = () => {
+  errors.value = [];
   if (form.value.email === "") {
     errors.value.push("Your e-mail is missing");
   }
@@ -113,7 +123,7 @@ const submitForm = () => {
         if (response.data.message === "success") {
           toastStore.showToast(
             5000,
-            "The user is registered. Please log in",
+            "The user is registered. Please activate your account by clicking your email link.",
             "bg-emerald-500"
           );
 
@@ -122,6 +132,11 @@ const submitForm = () => {
           form.value.password1 = "";
           form.value.password2 = "";
         } else {
+          const data = JSON.parse(response.data.message);
+          for (const key in data) {
+            errors.value.push(data[key][0].message);
+          }
+
           toastStore.showToast(
             5000,
             "Something went wrong. Please try again",

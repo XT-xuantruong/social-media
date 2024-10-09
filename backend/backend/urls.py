@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from .views import single_page_view
+from account.views import activateemail
 
 urlpatterns = [
+    path('activateemail/', activateemail, name='activateemail'),
     path('api/chat/', include('chat.urls')),
     path('api/search/', include('search.urls')),
     path('api/account/', include('account.urls')),

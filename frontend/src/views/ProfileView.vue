@@ -18,12 +18,16 @@ const posts = ref([]);
 const user = ref({});
 const body = ref("");
 
+
 const getFeed = () => {
   postServices
     .getProfileFeed(route.params.id)
     .then((response) => {
       posts.value = response.data.posts;
       user.value = response.data.user;
+
+      console.log("long", user);
+
     })
     .catch((error) => {
       console.log("error", error);
@@ -146,6 +150,7 @@ onMounted(() => getFeed());
               class="p-4 w-full bg-gray-100 rounded-lg"
               placeholder="What are you thinking about?"
             ></textarea>
+            
           </div>
 
           <div class="p-4 border-t border-gray-100 flex justify-between">

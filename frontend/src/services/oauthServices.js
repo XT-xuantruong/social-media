@@ -92,6 +92,18 @@ class OauthServices extends ApiService {
       },
     });
   }
+
+  async changePassword(formdata) {
+    return this.request({
+      method: "post",
+      url: `/${this.entity}/editpassword/`,
+      data: formdata,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
+
 }
 
 export default new OauthServices();

@@ -1,7 +1,8 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-
+from django.contrib.auth.forms import PasswordChangeForm
+from django.core.mail import send_mail
 from .forms import SignupForm,ProfileForm
 from .models import User, FriendshipRequest
 from upload.models import Photo
@@ -36,13 +37,25 @@ def signup(request):
     })
 
     if form.is_valid():
-        form.save()
+        user = form.save()
+        user.is_active = False
+        user.save()
+        url = f'http://127.0.0.1:8000/activateemail/?email={user.email}&id={user.id}' 
+        send_mail(
+            "Please verify your email",
+            f"The url for activating your account is: {url}",
+            "hoanglong200703@gmail.com",
+            [user.email],
+            fail_silently=False,
+        )
 
         # Send verification email later!
     else:
-        message = 'error'
+        message = form.errors.as_json()
+    
+    print(message)
 
-    return JsonResponse({'message': message})
+    return JsonResponse({'message': message}, safe=False)
 
 
 @api_view(['POST'])
@@ -75,11 +88,25 @@ def editprofile(request):
             form = ProfileForm(form_data, instance=user)
             if form.is_valid():
                 form.save()
-            return JsonResponse({'message': 'information updated', 'data': img_obj.url})
+                
+            serializer = UserSerializer(user)
+            return JsonResponse({'message': 'information updated', 'data': img_obj.url, 'user': serializer.data})
     
         except  Exception as e:
             return custom_response('Upload images failed!', 'Error', [str(e)], 400)
-        
+    
+@api_view(['POST'])
+def editpassword(request):
+    user = request.user
+    
+    form = PasswordChangeForm(data=request.POST, user=user)
+
+    if form.is_valid():
+        form.save()
+
+        return JsonResponse({'message': 'success'})
+    else:
+        return JsonResponse({'message': form.errors.as_json()}, safe=False)
         
 
 @api_view(['GET'])
@@ -134,3 +161,16 @@ def handle_request(request, pk, status):
         message="rejected request"
 
     return JsonResponse({'message': message})
+
+def activateemail(request):
+    email = request.GET.get('email', '')
+    id = request.GET.get('id', '')
+
+    if email and id:
+        user = User.objects.get(id=id, email=email)
+        user.is_active = True
+        user.save()
+    
+        return HttpResponse('The user is now activated. You can go ahead and log in!')
+    else:
+        return HttpResponse('The parameters is not valid!')

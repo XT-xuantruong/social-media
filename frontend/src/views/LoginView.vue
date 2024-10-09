@@ -43,7 +43,9 @@ const submitForm = async () => {
       // Điều hướng đến trang /feed
       router.push("/feed");
     } catch (error) {
-      console.error("Error:", error);
+      errors.value.push(
+        "The email or password is incorrect! Or the user is not activated!"
+      );
     }
   }
 };
@@ -69,11 +71,11 @@ const submitForm = async () => {
         />
       </div>
 
-      <div v-if="errors.length > 0">
-        <ul>
-          <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
-        </ul>
-      </div>
+      <template v-if="errors.length > 0">
+        <div class="bg-red-300 text-white rounded-lg p-6">
+          <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
+        </div>
+      </template>
 
       <button type="submit">Login</button>
     </form>

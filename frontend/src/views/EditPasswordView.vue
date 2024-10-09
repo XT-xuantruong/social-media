@@ -2,45 +2,51 @@
   <div class="max-w-7xl mx-auto grid grid-cols-2 gap-4">
     <div class="main-left">
       <div class="p-12 bg-white border border-gray-200 rounded-lg">
-        <h1 class="mb-6 text-2xl">Edit profile</h1>
-        <p class="mb-6 text-gray-500">
-          Lorem ipsum dolor sit mate. Lorem ipsum dolor sit mate. Lorem ipsum
-          dolor sit mate. Lorem ipsum dolor sit mate. Lorem ipsum dolor sit
-          mate. Lorem ipsum dolor sit mate.
-        </p>
-        <RouterLink to="/profile/edit/password" class="underline">Edit password</RouterLink>
+        <h1 class="mb-6 text-2xl">Edit password</h1>
+
+        <p class="mb-6 text-gray-500">Here you can change your password!</p>
       </div>
     </div>
+
     <div class="main-right">
       <div class="p-12 bg-white border border-gray-200 rounded-lg">
         <form class="space-y-6" v-on:submit.prevent="submitForm">
           <div>
-            <label>Name</label><br />
+            <label>Old password</label><br />
             <input
-              type="text"
-              v-model="form.name"
-              placeholder="Your full name"
+              type="password"
+              v-model="form.old_password"
+              placeholder="Your old password"
               class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg"
             />
           </div>
+
           <div>
-            <label>E-mail</label><br />
+            <label>New password</label><br />
             <input
-              type="email"
-              v-model="form.email"
-              placeholder="Your e-mail address"
+              type="password"
+              v-model="form.new_password1"
+              placeholder="Your new password"
               class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg"
             />
           </div>
+
           <div>
-            <label>Avatar</label><br />
-            <input type="file" ref="file" />
+            <label>Repeat password</label><br />
+            <input
+              type="password"
+              v-model="form.new_password2"
+              placeholder="Repeat password"
+              class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg"
+            />
           </div>
+
           <template v-if="errors.length > 0">
             <div class="bg-red-300 text-white rounded-lg p-6">
               <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
             </div>
           </template>
+
           <div>
             <button class="py-4 px-6 bg-purple-600 text-white rounded-lg">
               Save changes
@@ -51,58 +57,60 @@
     </div>
   </div>
 </template>
+
 <script setup>
+import axios from "axios";
+
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
-import { ref } from "vue";
 import oauthServices from "@/services/oauthServices";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-const router = useRouter();
 const toastStore = useToastStore();
 const userStore = useUserStore();
+const router = useRouter();
+
 const form = ref({
-  email: userStore.user.email,
-  name: userStore.user.name,
+  old_password: "",
+  new_password1: "",
+  new_password2: "",
 });
+
 const errors = ref([]);
-const file = ref(null);
 
 const submitForm = () => {
   errors.value = [];
-  if (form.value.email === "") {
-    errors.value.push("Your e-mail is missing");
+
+  if (form.value.password1 !== form.value.password2) {
+    errors.value.push("The password does not match");
   }
-  if (form.value.name === "") {
-    errors.value.push("Your name is missing");
-  }
+
   if (errors.value.length === 0) {
     let formData = new FormData();
-    formData.append("avatar", file.value.files[0]);
-    formData.append("name", form.value.name);
-    formData.append("email", form.value.email);
+    formData.append("old_password", form.value.old_password);
+    formData.append("new_password1", form.value.new_password1);
+    formData.append("new_password2", form.value.new_password2);
+
+    toastStore.showToast(5000, "The information was saved", "bg-emerald-500");
+
     oauthServices
-      .updateProfile(formData)
+      .changePassword(formData)
       .then((response) => {
-        if (response.data.message === "information updated") {
+        if (response.data.message === "success") {
           toastStore.showToast(
             5000,
             "The information was saved",
             "bg-emerald-500"
           );
-          userStore.setUserInfo({
-            id: userStore.user.id,
-            name: form.value.name,
-            email: form.value.email,
-            avatar: response.data.data,
-          });
-          router.back();
+
+          router.push(`/profile/${userStore.user.id}`);
         } else {
-          toastStore.showToast(
-            5000,
-            `${response.data.message}. Please try again`,
-            "bg-red-300"
-          );
+          const data = JSON.parse(response.data.message);
+
+          for (const key in data) {
+            errors.value.push(data[key][0].message);
+          }
         }
       })
       .catch((error) => {

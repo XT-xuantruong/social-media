@@ -87,7 +87,7 @@ const logout = async () => {
           </RouterLink>
         </div>
         <div class="menu-right">
-          <template v-if="user.user.isAuthenticated">
+          <template v-if="user.user.isAuthenticated && user.user.id">
             <RouterLink :to="{ name: 'profile', params: { id: user.user.id } }">
               <img :src="user.user.avatar" class="w-12 h-12 rounded-full" />
             </RouterLink>
