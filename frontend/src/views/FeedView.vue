@@ -36,7 +36,7 @@
         v-for="post in posts"
         v-bind:key="post.id"
       >
-        <FeedItem v-bind:post="post" />
+        <FeedItem v-bind:post="post" v-on:deletePost="deletePost" />
       </div>
     </div>
 
@@ -96,6 +96,10 @@ const onFileChange = (e) => {
   url.value = URL.createObjectURL(file);
 };
 onMounted(() => getFeed());
+
+const deletePost = (id) => {
+  posts.value = posts.value.filter((post) => post.id !== id);
+};
 </script>
 
 <style scoped>

@@ -98,6 +98,10 @@ watch(
   () => route.params.id,
   () => getFeed()
 );
+
+const deletePost = (id) => {
+  posts.value = posts.value.filter((post) => post.id !== id);
+};
 </script>
 <template>
   <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
@@ -183,7 +187,7 @@ watch(
         v-for="post in posts"
         v-bind:key="post.id"
       >
-        <FeedItem v-bind:post="post" />
+        <FeedItem v-bind:post="post" v-on:deletePost="deletePost" />
       </div>
     </div>
 
