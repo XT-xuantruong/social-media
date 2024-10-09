@@ -9,6 +9,7 @@ from upload.models import Photo
 from upload.serializers import PhotoSerializer
 from upload.helpers import custom_response
 from .serializers import UserSerializer, FriendshipRequestSerializer
+from notification.utils import create_notification
 import cloudinary.api
 
 
@@ -134,8 +135,8 @@ def send_friendship_request(request, pk):
     check2 = FriendshipRequest.objects.filter(created_for=user).filter(created_by=request.user)
 
     if not check1 or not check2:
-        FriendshipRequest.objects.create(created_for=user, created_by=request.user)
-
+        friendrequest = FriendshipRequest.objects.create(created_for=user, created_by=request.user)
+        notification = create_notification(request, 'new_friendrequest', friendrequest_id=friendrequest.id)
         return JsonResponse({'message': 'friendship request created'})
     else:
         return JsonResponse({'message': 'request already sent'})
@@ -157,8 +158,10 @@ def handle_request(request, pk, status):
         request_user.friends_count = request_user.friends_count + 1
         request_user.save()
         message="accepted request"
+        notification = create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
     else:
         message="rejected request"
+        notification = create_notification(request, 'rejected_friendrequest', friendrequest_id=friendship_request.id)
 
     return JsonResponse({'message': message})
 

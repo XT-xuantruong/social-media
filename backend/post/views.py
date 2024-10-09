@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from account.models import User
 from account.serializers import UserSerializer
-
+from notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
 from .models import Post, Like, Comment, Trend, PostAttachment
 from upload.models import Photo
@@ -115,6 +115,8 @@ def post_like(request, pk):
         post.likes.add(like)
         post.save()
 
+        notification = create_notification(request, 'post_like', post_id=post.id)
+
         return JsonResponse({'message': 'like created'})
     else:
         return JsonResponse({'message': 'post already liked'})
@@ -126,6 +128,7 @@ def post_create_comment(request, pk):
     post.comments.add(comment)
     post.comments_count = post.comments_count + 1
     post.save()
+    notification = create_notification(request, 'post_comment', post_id=post.id)
     serializer = CommentSerializer(comment)
     return JsonResponse(serializer.data, safe=False)
 

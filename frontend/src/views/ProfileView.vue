@@ -17,13 +17,8 @@ const router = useRouter();
 const posts = ref([]);
 const user = ref({});
 const body = ref("");
-<<<<<<< HEAD
-
-
-=======
 const url = ref(null);
 const file = ref(null);
->>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
 const getFeed = () => {
   postServices
     .getProfileFeed(route.params.id)
@@ -32,7 +27,6 @@ const getFeed = () => {
       user.value = response.data.user;
 
       console.log("long", user);
-
     })
     .catch((error) => {
       console.log("error", error);
@@ -158,13 +152,9 @@ watch(
               class="p-4 w-full bg-gray-100 rounded-lg"
               placeholder="What are you thinking about?"
             ></textarea>
-<<<<<<< HEAD
-            
-=======
             <div id="preview" v-if="url">
               <img :src="url" class="w-[100px] mt-3 rounded-xl" />
             </div>
->>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
           </div>
 
           <div class="p-4 border-t border-gray-100 flex justify-between">
