@@ -10,11 +10,8 @@ import FriendsView from "@/views/FriendsView.vue";
 import PostView from "@/views/PostView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import TrendView from "@/views/TrendView.vue";
-<<<<<<< HEAD
 import EditPasswordView from '../views/EditPasswordView.vue'
 
-=======
->>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

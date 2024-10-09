@@ -35,6 +35,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, blank=True, default='')
     avatar = models.CharField(max_length=255, blank=True, default='https://res.cloudinary.com/dvzjb1o3h/image/upload/v1727704410/x6xaehqt16rjvnvhofv3.jpg')
     friends = models.ManyToManyField('self')
+    
+    people_you_may_know = models.ManyToManyField('self')
+    
     friends_count = models.IntegerField(default=0)
 
     posts_count = models.IntegerField(default=0)

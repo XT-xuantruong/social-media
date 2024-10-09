@@ -80,6 +80,13 @@ class OauthServices extends ApiService {
     });
   }
 
+  async getFriendSuggest() {
+    return this.request({
+      method: "get",
+      url: `/${this.entity}/friends/suggested/`,
+    });
+  }
+
   async updateProfile(data) {
     console.log("data update", data);
 

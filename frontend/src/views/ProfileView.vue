@@ -17,19 +17,17 @@ const router = useRouter();
 const posts = ref([]);
 const user = ref({});
 const body = ref("");
-<<<<<<< HEAD
+const can_send_friendship_request=ref(null)
 
-
-=======
 const url = ref(null);
 const file = ref(null);
->>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
 const getFeed = () => {
   postServices
     .getProfileFeed(route.params.id)
     .then((response) => {
       posts.value = response.data.posts;
       user.value = response.data.user;
+      can_send_friendship_request = response.data.can_send_friendship_request
 
       console.log("long", user);
 
@@ -61,6 +59,7 @@ const sendFriendshipRequest = () => {
   oauthServices
     .sendFriendshipRequest(route.params.id)
     .then((response) => {
+      can_send_friendship_request = false
       if (response.data.message == "request already sent") {
         this.toastStore.showToast(
           5000,
@@ -124,7 +123,7 @@ watch(
           <button
             class="inline-block py-4 px-3 bg-purple-600 text-xs text-white rounded-lg"
             @click="sendFriendshipRequest"
-            v-if="userStore.user.id !== user.id"
+            v-if="userStore.user.id !== user.id && can_send_friendship_request"
           >
             Send friendship request
           </button>
@@ -158,13 +157,10 @@ watch(
               class="p-4 w-full bg-gray-100 rounded-lg"
               placeholder="What are you thinking about?"
             ></textarea>
-<<<<<<< HEAD
             
-=======
             <div id="preview" v-if="url">
               <img :src="url" class="w-[100px] mt-3 rounded-xl" />
             </div>
->>>>>>> 4bddc1161a5398f5e73e8e4faa0df77adf537c53
           </div>
 
           <div class="p-4 border-t border-gray-100 flex justify-between">
