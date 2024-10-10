@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/search/', include('search.urls')),
     path('api/account/', include('account.urls')),
     path('api/posts/', include('post.urls')),
+    path('api/notifications/', include('notification.urls')),
     path('api/', include('upload.urls')),
     path('admin/', admin.site.urls),
     re_path(r"^.*$", single_page_view),

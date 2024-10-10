@@ -11,7 +11,7 @@
         v-for="post in posts"
         v-bind:key="post.id"
       >
-        <FeedItem v-bind:post="post" />
+        <FeedItem v-bind:post="post" v-on:deletePost="deletePost" />
       </div>
     </div>
 
@@ -48,6 +48,10 @@ const getFeed = () => {
 };
 
 onMounted(() => getFeed());
+
+const deletePost = (id) => {
+  posts.value = posts.value.filter((post) => post.id !== id);
+};
 </script>
 
 <style scoped>

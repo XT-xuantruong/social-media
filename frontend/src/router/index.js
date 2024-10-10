@@ -10,7 +10,8 @@ import FriendsView from "@/views/FriendsView.vue";
 import PostView from "@/views/PostView.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import TrendView from "@/views/TrendView.vue";
-import EditPasswordView from '../views/EditPasswordView.vue'
+import EditPasswordView from "../views/EditPasswordView.vue";
+import NotificationsView from "@/views/NotificationsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,9 +77,14 @@ const router = createRouter({
       component: TrendView,
     },
     {
-      path: '/profile/edit/password',
-      name: 'editpassword',
-      component: EditPasswordView
+      path: "/notifications",
+      name: "notifications",
+      component: NotificationsView,
+    },
+    {
+      path: "/profile/edit/password",
+      name: "editpassword",
+      component: EditPasswordView,
     },
   ],
 });
