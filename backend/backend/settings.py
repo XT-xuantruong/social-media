@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(join(BASE_DIR, 'config.env'))
 
+WEBSITE_URL = 'http://127.0.0.1:8000'
 
 AUTH_USER_MODEL = 'account.User'
 

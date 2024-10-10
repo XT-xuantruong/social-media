@@ -75,13 +75,15 @@
           </div>
         </form>
 
-        <div
+        <Toast />
+        <!-- <div
           class="bg-green-300 text-white rounded-lg p-6 mt-2"
           :class="toastStore.classes"
           v-if="toastStore.isVisible"
         >
           {{ toastStore.message }}
-        </div>
+        </div> -->
+
       </div>
     </div>
   </div>
@@ -92,6 +94,7 @@ import { useToastStore } from "@/stores/toast";
 import oauthServices from "@/services/oauthServices";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import Toast from "@/components/Toast.vue";
 
 const toastStore = useToastStore();
 const form = ref({ email: "", name: "", password1: "", password2: "" });

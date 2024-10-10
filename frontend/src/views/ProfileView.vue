@@ -1,10 +1,10 @@
 <script setup>
-import axios from "axios";
 import PeopleYouMayKnow from "../components/PeopleYouMayKnow.vue";
 import Trends from "../components/Trends.vue";
 import FeedItem from "../components/FeedItem.vue";
+import FeedForm from "../components/FeedForm.vue";
 import { useUserStore } from "@/stores/user";
-import { onBeforeMount, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import postServices from "@/services/postServices";
 import oauthServices from "@/services/oauthServices";
@@ -16,39 +16,18 @@ const router = useRouter();
 
 const posts = ref([]);
 const user = ref({});
-const body = ref("");
-const can_send_friendship_request=ref(null)
+const can_send_friendship_request = ref(null);
 
-const url = ref(null);
-const file = ref(null);
+
 const getFeed = () => {
   postServices
     .getProfileFeed(route.params.id)
     .then((response) => {
       posts.value = response.data.posts;
       user.value = response.data.user;
-      can_send_friendship_request = response.data.can_send_friendship_request
+      can_send_friendship_request.value = response.data.can_send_friendship_request;
 
-      console.log("long", user);
-
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
-};
-const submitForm = () => {
-  let formData = new FormData();
-  if (file.value && file.value.files.length > 0) {
-    formData.append("attachments", file.value.files[0]);
-  }
-  formData.append("body", body.value);
-  postServices
-    .create(formData)
-    .then((response) => {
-      posts.value.unshift(response.data.data);
-      body.value = "";
-      file.value = null;
-      url.value = null;
+      console.log("long", response.data);
     })
     .catch((error) => {
       console.log("error", error);
@@ -59,7 +38,7 @@ const sendFriendshipRequest = () => {
   oauthServices
     .sendFriendshipRequest(route.params.id)
     .then((response) => {
-      can_send_friendship_request = false
+      can_send_friendship_request = false;
       if (response.data.message == "request already sent") {
         this.toastStore.showToast(
           5000,
@@ -89,10 +68,7 @@ const sendDirectMessage = () => {
       console.log("error", error);
     });
 };
-const onFileChange = (e) => {
-  const file = e.target.files[0];
-  url.value = URL.createObjectURL(file);
-};
+
 onMounted(() => getFeed());
 
 watch(
@@ -150,33 +126,7 @@ watch(
         class="bg-white border border-gray-200 rounded-lg"
         v-if="userStore.user.id === user.id"
       >
-        <form v-on:submit.prevent="submitForm" method="post">
-          <div class="p-4">
-            <textarea
-              v-model="body"
-              class="p-4 w-full bg-gray-100 rounded-lg"
-              placeholder="What are you thinking about?"
-            ></textarea>
-            
-            <div id="preview" v-if="url">
-              <img :src="url" class="w-[100px] mt-3 rounded-xl" />
-            </div>
-          </div>
-
-          <div class="p-4 border-t border-gray-100 flex justify-between">
-            <label
-              class="inline-block py-4 px-6 bg-gray-600 text-white rounded-lg"
-            >
-              <input type="file" ref="file" @change="onFileChange" />
-              Attach image
-            </label>
-            <button
-              class="inline-block py-4 px-6 bg-purple-600 text-white rounded-lg"
-            >
-              Post
-            </button>
-          </div>
-        </form>
+        <FeedForm v-bind:user="user" v-bind:posts="posts" />
       </div>
 
       <div
